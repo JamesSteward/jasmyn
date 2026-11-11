@@ -25,7 +25,7 @@
     .nav a {
       margin: 0 1.2rem;
       text-decoration: none;
-      color: #111;
+      color: #e591a6;
       font-size: 0.85rem;
       letter-spacing: 1.5px;
       text-transform: uppercase;
@@ -37,18 +37,46 @@
         letter-spacing: 1px;
       }
     }
-    .portfolio {
-      max-width: 720px;
-      margin: 3rem auto;
-      padding: 0 1rem;
+    .carousel {
+      position: relative;
     }
-    .portfolio img {
-      width: 100%;
-      height: auto;
+    .carousel-track {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      height: min(78vh, 760px, calc(100vw * 4 / 3));
+    }
+    .carousel-track::-webkit-scrollbar { display: none; }
+    .carousel-track img {
+      height: 100%;
+      width: auto;
+      flex: 0 0 auto;
+      scroll-snap-align: start;
       display: block;
-      margin-bottom: 2.5rem;
     }
-    .portfolio img:last-child { margin-bottom: 0; }
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2;
+      width: 3rem;
+      height: 4.5rem;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: #fff;
+      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+      cursor: pointer;
+    }
+    .carousel-btn.prev { left: 0.35rem; }
+    .carousel-btn.next { right: 0.35rem; }
+    .carousel-btn:disabled {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .carousel-btn svg { display: block; margin: 0 auto; }
     footer {
       text-align: center;
       padding: 3rem 1rem;
@@ -56,12 +84,12 @@
       color: #666;
     }
     footer a {
-      color: #b0b0b0;
+      color: #e591a6;
       margin: 0 0.55rem;
       display: inline-flex;
       text-decoration: none;
     }
-    footer a:hover { color: #666; }
+    footer a:hover { color: #c45d7a; }
     footer svg { display: block; }
   </style>
 </head>
@@ -76,13 +104,59 @@
     <a href="contact.html">Contact</a>
   </nav>
 
-  <div class="portfolio">
-    <img src="images/jasmyn-01.jpg" alt="Jasmyn">
-    <img src="images/jasmyn-02.jpg" alt="Jasmyn">
-    <img src="images/jasmyn-03.jpg" alt="Jasmyn">
-    <img src="images/jasmyn-04.jpg" alt="Jasmyn">
-    <img src="images/jasmyn-05.jpg" alt="Jasmyn">
+  <div class="carousel">
+    <button class="carousel-btn prev" type="button" aria-label="Previous photo">
+      <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M15 5 L8 12 L15 19"/>
+      </svg>
+    </button>
+    <div class="carousel-track" tabindex="0" aria-label="Portfolio photos">
+      <img src="images/jasmyn-02.jpg" alt="Jasmyn">
+      <img src="images/jasmyn-03.jpg" alt="Jasmyn">
+      <img src="images/jasmyn-04.jpg" alt="Jasmyn">
+      <img src="images/jasmyn-05.jpg" alt="Jasmyn">
+    </div>
+    <button class="carousel-btn next" type="button" aria-label="Next photo">
+      <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4">
+        <path d="M9 5 L16 12 L9 19"/>
+      </svg>
+    </button>
   </div>
+  <script>
+    const track = document.querySelector(".carousel-track");
+    const prev = document.querySelector(".carousel-btn.prev");
+    const next = document.querySelector(".carousel-btn.next");
+
+    function step() {
+      const img = track.querySelector("img");
+      return img ? img.getBoundingClientRect().width : track.clientWidth;
+    }
+
+    function update() {
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+    }
+
+    prev.addEventListener("click", () => {
+      track.scrollBy({ left: -step(), behavior: "smooth" });
+    });
+    next.addEventListener("click", () => {
+      track.scrollBy({ left: step(), behavior: "smooth" });
+    });
+    track.addEventListener("scroll", update, { passive: true });
+    track.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") {
+        next.click();
+        event.preventDefault();
+      } else if (event.key === "ArrowLeft") {
+        prev.click();
+        event.preventDefault();
+      }
+    });
+    window.addEventListener("resize", update);
+    track.querySelectorAll("img").forEach((img) => img.addEventListener("load", update));
+    update();
+  </script>
 
   <footer>
     <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram">
