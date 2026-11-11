@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jasmyn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -11,8 +14,26 @@
       background: #fff;
       color: #111;
     }
+    .logo {
+      display: block;
+      width: min(280px, 78vw);
+      margin: 1.5rem auto 0;
+    }
+    .logo svg { width: 100%; height: auto; display: block; }
+    .logo-name {
+      font-family: "Great Vibes", cursive;
+      font-size: 140px;
+      fill: #e91e63;
+    }
+    .logo-tag {
+      font-family: Montserrat, sans-serif;
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: 4px;
+      fill: #111;
+    }
     .nav {
-      padding: 1.5rem 2rem;
+      padding: 0.4rem 2rem 1.25rem;
       text-align: center;
       border-bottom: 1px solid #eee;
     }
@@ -23,6 +44,13 @@
       font-size: 0.85rem;
       letter-spacing: 1.5px;
       text-transform: uppercase;
+    }
+    @media (max-width: 520px) {
+      .nav a {
+        margin: 0 0.45rem;
+        font-size: 0.72rem;
+        letter-spacing: 1px;
+      }
     }
     .hero {
       max-width: 800px;
@@ -58,6 +86,12 @@
   </style>
 </head>
 <body>
+  <a class="logo" href="index.html" aria-label="Jasmyn">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="170 48 460 250" aria-hidden="true">
+      <text class="logo-name" x="400" y="180" text-anchor="middle">Jasmyn</text>
+      <text class="logo-tag" x="400" y="280" text-anchor="middle">MODEL | STYLE INFLUENCER</text>
+    </svg>
+  </a>
   <nav class="nav">
     <a href="index.html">Home</a>
     <a href="gallery.html">Portfolio</a>
@@ -66,7 +100,7 @@
   </nav>
 
   <div class="hero">
-    <img src="https://picsum.photos/id/1015/800/1000" alt="Jasmyn">
+    <img src="images/jasmyn-hero.jpg" alt="Jasmyn">
     <div class="welcome">WELCOME</div>
   </div>
 
