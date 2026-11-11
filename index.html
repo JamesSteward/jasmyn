@@ -32,11 +32,25 @@
       letter-spacing: 1.5px;
       text-transform: uppercase;
     }
+    .nav a.work {
+      display: inline-block;
+      margin: 0 0 0 0.35rem;
+      padding: 0.45rem 0.7rem;
+      border: 1px solid #e591a6;
+      line-height: 1;
+    }
+    .nav a.work:hover {
+      background: #e591a6;
+      color: #fff;
+    }
     @media (max-width: 520px) {
       .nav a {
         margin: 0 0.45rem;
         font-size: 0.72rem;
         letter-spacing: 1px;
+      }
+      .nav a.work {
+        margin: 0.65rem 0.45rem 0;
       }
     }
     .hero {
@@ -97,6 +111,7 @@
     <a href="gallery.html">Portfolio</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
+    <a class="work" href="contact.html">Work with me</a>
   </nav>
 
   <div class="hero">
