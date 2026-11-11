@@ -39,46 +39,56 @@
         letter-spacing: 1px;
       }
     }
-    .carousel {
-      position: relative;
-    }
-    .carousel-track {
+    .sets {
       display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-      height: min(78vh, 760px, calc(100vw * 4 / 3));
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.45rem 1.15rem;
+      padding: 0.95rem 1rem 1.05rem;
     }
-    .carousel-track::-webkit-scrollbar { display: none; }
-    .carousel-track img {
-      height: 100%;
-      width: auto;
-      flex: 0 0 auto;
-      scroll-snap-align: start;
-      display: block;
-    }
-    .carousel-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 2;
-      width: 3rem;
-      height: 4.5rem;
+    .sets button {
       border: 0;
-      padding: 0;
-      background: transparent;
-      color: #fff;
-      filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
+      background: none;
+      padding: 0.15rem 0;
+      color: #e591a6;
+      font: inherit;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
       cursor: pointer;
     }
-    .carousel-btn.prev { left: 0.35rem; }
-    .carousel-btn.next { right: 0.35rem; }
-    .carousel-btn:disabled {
-      opacity: 0;
-      pointer-events: none;
+    .sets button[aria-pressed="true"] {
+      text-decoration: underline;
+      text-underline-offset: 0.35em;
     }
-    .carousel-btn svg { display: block; margin: 0 auto; }
+    @media (max-width: 520px) {
+      .sets { gap: 0.55rem 0.85rem; }
+      .sets button { font-size: 0.68rem; letter-spacing: 0.08em; }
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0.75rem;
+      padding: 0 0.75rem 2.5rem;
+    }
+    .grid img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      display: block;
+    }
+    .grid img[hidden] { display: none; }
+    .sets-empty {
+      margin: 0;
+      padding: 4.5rem 1.5rem;
+      text-align: center;
+      color: #888;
+      font-size: 0.95rem;
+    }
+    .sets-empty[hidden] { display: none; }
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 0.45rem; }
+    }
     footer {
       text-align: center;
       padding: 3rem 1rem;
@@ -117,60 +127,45 @@
     <a href="contact.html">Contact</a>
   </nav>
 
-  <div class="carousel">
-    <button class="carousel-btn prev" type="button" aria-label="Previous photo">
-      <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4">
-        <path d="M15 5 L8 12 L15 19"/>
-      </svg>
-    </button>
-    <div class="carousel-track" tabindex="0" aria-label="Portfolio photos">
-      <img src="images/jasmyn-02.jpg" alt="Jasmyn">
-      <img src="images/jasmyn-03.jpg" alt="Jasmyn">
-      <img src="images/jasmyn-04.jpg" alt="Jasmyn">
-      <img src="images/jasmyn-05.jpg" alt="Jasmyn">
-      <img src="images/jasmyn-06.jpg" alt="Jasmyn">
-      <img src="images/jasmyn-07.jpg" alt="Jasmyn">
-    </div>
-    <button class="carousel-btn next" type="button" aria-label="Next photo">
-      <svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4">
-        <path d="M9 5 L16 12 L9 19"/>
-      </svg>
-    </button>
+  <nav class="sets" aria-label="Portfolio filters">
+    <button type="button" data-filter="all" aria-pressed="true">All</button>
+    <button type="button" data-filter="fashion" aria-pressed="false">Fashion</button>
+    <button type="button" data-filter="editorial" aria-pressed="false">Editorial</button>
+    <button type="button" data-filter="beauty" aria-pressed="false">Beauty</button>
+    <button type="button" data-filter="commercial" aria-pressed="false">Commercial</button>
+    <button type="button" data-filter="lingerie" aria-pressed="false">Lingerie &amp; Sleepwear</button>
+  </nav>
+
+  <div class="grid">
+    <img src="images/jasmyn-02.jpg" alt="Jasmyn" data-category="fashion">
+    <img src="images/jasmyn-03.jpg" alt="Jasmyn" data-category="editorial">
+    <img src="images/jasmyn-04.jpg" alt="Jasmyn" data-category="beauty">
+    <img src="images/jasmyn-05.jpg" alt="Jasmyn" data-category="commercial">
+    <img src="images/jasmyn-06.jpg" alt="Jasmyn" data-category="lingerie">
+    <img src="images/jasmyn-07.jpg" alt="Jasmyn" data-category="fashion">
   </div>
+  <p class="sets-empty" hidden>No photos in this set yet.</p>
   <script>
-    const track = document.querySelector(".carousel-track");
-    const prev = document.querySelector(".carousel-btn.prev");
-    const next = document.querySelector(".carousel-btn.next");
+    const filters = document.querySelectorAll(".sets button");
+    const photos = document.querySelectorAll(".grid img");
+    const empty = document.querySelector(".sets-empty");
 
-    function step() {
-      const img = track.querySelector("img");
-      return img ? img.getBoundingClientRect().width : track.clientWidth;
+    function applyFilter(category) {
+      let shown = 0;
+      filters.forEach((button) => {
+        button.setAttribute("aria-pressed", button.dataset.filter === category ? "true" : "false");
+      });
+      photos.forEach((photo) => {
+        const match = category === "all" || photo.dataset.category === category;
+        photo.hidden = !match;
+        if (match) shown += 1;
+      });
+      empty.hidden = shown > 0;
     }
 
-    function update() {
-      prev.disabled = track.scrollLeft <= 2;
-      next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
-    }
-
-    prev.addEventListener("click", () => {
-      track.scrollBy({ left: -step(), behavior: "smooth" });
+    filters.forEach((button) => {
+      button.addEventListener("click", () => applyFilter(button.dataset.filter));
     });
-    next.addEventListener("click", () => {
-      track.scrollBy({ left: step(), behavior: "smooth" });
-    });
-    track.addEventListener("scroll", update, { passive: true });
-    track.addEventListener("keydown", (event) => {
-      if (event.key === "ArrowRight") {
-        next.click();
-        event.preventDefault();
-      } else if (event.key === "ArrowLeft") {
-        prev.click();
-        event.preventDefault();
-      }
-    });
-    window.addEventListener("resize", update);
-    track.querySelectorAll("img").forEach((img) => img.addEventListener("load", update));
-    update();
   </script>
 
   <footer>
